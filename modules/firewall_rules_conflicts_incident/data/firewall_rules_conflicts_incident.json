@@ -1,0 +1,150 @@
+{
+  "name": "firewall_rules_conflicts_incident",
+  "description": "Firewall Rules Conflicts Incident refers to a situation where there is a conflict between different rules in the firewall configuration that is causing network traffic to be blocked or allowed unexpectedly. This can lead to disruptions in network connectivity, security breaches, and other issues that can negatively affect the performance of the system. Resolving this incident requires careful analysis of the firewall configuration, identification of the conflicting rules, and implementing necessary changes to restore network connectivity and security.",
+  "params": [
+    {
+      "name": "IP_ADDRESS",
+      "value": ""
+    },
+    {
+      "name": "PATH_TO_FIREWALL_CONFIG",
+      "value": ""
+    },
+    {
+      "name": "PROTOCOL",
+      "value": ""
+    },
+    {
+      "name": "PORT_NUMBER",
+      "value": ""
+    },
+    {
+      "name": "HOST_NAME",
+      "value": ""
+    },
+    {
+      "name": "K8S_CLUSTER_NAME",
+      "value": ""
+    },
+    {
+      "name": "NAMESPACE",
+      "value": ""
+    }
+  ],
+  "cells": [
+    {
+      "name": "cell_1",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Firewall Rules Conflicts Incident\nFirewall Rules Conflicts Incident refers to a situation where there is a conflict between different rules in the firewall configuration that is causing network traffic to be blocked or allowed unexpectedly. This can lead to disruptions in network connectivity, security breaches, and other issues that can negatively affect the performance of the system. Resolving this incident requires careful analysis of the firewall configuration, identification of the conflicting rules, and implementing necessary changes to restore network connectivity and security."
+    },
+    {
+      "name": "cell_2",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check currently applied firewall rules"
+    },
+    {
+      "name": "cell_3",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `sudo iptables -L`"
+    },
+    {
+      "name": "cell_4",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check active network connections and their states"
+    },
+    {
+      "name": "cell_5",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `sudo netstat -natp`"
+    },
+    {
+      "name": "cell_6",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check if the firewall service is running"
+    },
+    {
+      "name": "cell_7",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `sudo systemctl status firewalld`"
+    },
+    {
+      "name": "cell_8",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check for conflicts in the firewall rules"
+    },
+    {
+      "name": "cell_9",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `sudo iptables -nvL | grep DROP`"
+    },
+    {
+      "name": "cell_10",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check for conflicts in the firewall rules with a specific port"
+    },
+    {
+      "name": "cell_11",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `sudo iptables -nvL | grep DROP | grep ${PORT_NUMBER}`"
+    },
+    {
+      "name": "cell_12",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check for conflicts in the firewall rules with a specific IP address"
+    },
+    {
+      "name": "cell_13",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `sudo iptables -nvL | grep DROP | grep ${IP_ADDRESS}`"
+    },
+    {
+      "name": "cell_14",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check for conflicts in the firewall rules with a specific protocol"
+    },
+    {
+      "name": "cell_15",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `sudo iptables -nvL | grep DROP | grep ${PROTOCOL}`"
+    },
+    {
+      "name": "cell_16",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check firewall logs for any errors or conflicts"
+    },
+    {
+      "name": "cell_17",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `sudo tail /var/log/messages`"
+    },
+    {
+      "name": "cell_18",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Review firewall rules and remove any conflicting or redundant rules."
+    },
+    {
+      "name": "cell_19",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "host | host_name=$HOST_NAME | invoke_firewall_cleanup($PATH_TO_FIREWALL_CONFIG)"
+    }
+  ]
+}
